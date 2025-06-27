@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Solar System</title>
+    <link rel="stylesheet" href="style.css" /> 
+    
+  </head>
+  <body>
+    <div class="sun"></div>
+    <div class="mercury_orbit">
+      <div class="mercury"></div>
+    </div>
+    <div class="venus_orbit">
+      <div class="venus"></div>
+    </div>
+    <div class="earth_orbit">
+      <div class="earth">
+        <div class="moon_orbit">
+          <div class="moon"></div>
+        </div>
+      </div>
+    </div>
+    <div class="mars_orbit">
+      <div class="mars"></div>
+    </div>
+    <div class="jupiter_orbit">
+      <div class="jupiter"></div>
+    </div>
+    <div class="saturn_orbit">
+      <div class="saturn">
+        <div class="saturn_ring"></div>
+      </div>
+    </div>
+    <div class="uranus_orbit">
+      <div class="uranus"></div>
+    </div>
+    <div class="naptune_orbit">
+      <div class="naptune"></div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Create info display element
+        const infoDisplay = document.createElement("div");
+        infoDisplay.style.position = "fixed";
+        infoDisplay.style.top = "20px";
+        infoDisplay.style.left = "20px";
+        infoDisplay.style.backgroundColor = "rgba(0,0,0,0.7)";
+        infoDisplay.style.color = "white";
+        infoDisplay.style.padding = "10px";
+        infoDisplay.style.borderRadius = "5px";
+        infoDisplay.style.maxWidth = "250px";
+        infoDisplay.style.display = "none";
+        infoDisplay.style.zIndex = "1000";
+        document.body.appendChild(infoDisplay);
+
+        // Planet data
+        const planetData = {
+          sun: {
+            name: "Sun",
+            info: "The Sun is a star at the center of our solar system. It's a nearly perfect sphere of hot plasma.",
+            facts: [
+              "Diameter: 1.4 million km",
+              "Temperature: 5,500°C",
+              "Age: 4.6 billion years",
+              "Mass: 1.989 × 10³⁰ kg (333,000× Earth)",
+              "Surface Temperature: 5,500°C (9,932°F)",
+              "Core Temperature: 15 million°C (27 million°F)",
+              "Composition: 73% hydrogen, 25% helium, 2% heavier elements",
+            ],
+          },
+          mercury: {
+            name: "Mercury",
+            info: "The smallest planet in our solar system and closest to the Sun.",
+            facts: [
+              "Diameter: 4,880 km",
+              "Orbit: 88 Earth days",
+              "Day: 59 Earth days",
+            ],
+          },
+          venus: {
+            name: "Venus",
+            info: "Similar in size to Earth but with a toxic atmosphere of carbon dioxide.",
+            facts: [
+              "Diameter: 12,104 km",
+              "Orbit: 225 Earth days",
+              "Day: 243 Earth days",
+            ],
+          },
+          earth: {
+            name: "Earth",
+            info: "Our home planet and the only known place in the universe with life.",
+            facts: [
+              "Diameter: 12,742 km",
+              "Orbit: 365.25 days",
+              "Day: 24 hours",
+            ],
+          },
+          mars: {
+            name: "Mars",
+            info: "Known as the Red Planet due to iron oxide on its surface.",
+            facts: [
+              "Diameter: 6,779 km",
+              "Orbit: 687 Earth days",
+              "Day: 24.6 hours",
+            ],
+          },
+          jupiter: {
+            name: "Jupiter",
+            info: "The largest planet in our solar system, a gas giant with a Great Red Spot.",
+            facts: [
+              "Diameter: 139,820 km",
+              "Orbit: 12 Earth years",
+              "Day: 10 hours",
+            ],
+          },
+          saturn: {
+            name: "Saturn",
+            info: "Famous for its beautiful ring system made of ice and rock.",
+            facts: [
+              "Diameter: 116,460 km",
+              "Orbit: 29 Earth years",
+              "Day: 10.7 hours",
+            ],
+          },
+          uranus: {
+            name: "Uranus",
+            info: "An ice giant that rotates on its side with a unique blue-green color.",
+            facts: [
+              "Diameter: 50,724 km",
+              "Orbit: 84 Earth years",
+              "Day: 17 hours",
+            ],
+          },
+          neptune: {
+            name: "Neptune",
+            info: "The windiest planet with the strongest winds in the solar system.",
+            facts: [
+              "Diameter: 49,244 km",
+              "Orbit: 165 Earth years",
+              "Day: 16 hours",
+            ],
+          },
+        };
+
+        // Set up 3D perspective
+        document.body.style.perspective = "1000px";
+        document.body.style.transformStyle = "preserve-3d";
+
+        // Apply 3D to all orbit containers
+        const orbits = document.querySelectorAll('[class*="_orbit"]');
+        orbits.forEach((orbit) => {
+          orbit.style.transformStyle = "preserve-3d";
+        });
+
+        // Add hover effects to planets
+        const planets = {
+          sun: document.querySelector(".sun"),
+          mercury: document.querySelector(".mercury"),
+          venus: document.querySelector(".venus"),
+          earth: document.querySelector(".earth"),
+          mars: document.querySelector(".mars"),
+          jupiter: document.querySelector(".jupiter"),
+          saturn: document.querySelector(".saturn"),
+          uranus: document.querySelector(".uranus"),
+          neptune: document.querySelector(".naptune"),
+        };
+
+        Object.keys(planets).forEach((planet) => {
+          planets[planet].addEventListener("mouseenter", function () {
+            // Show planet info
+            const data = planetData[planet];
+            const factsHTML = data.facts
+              .map((fact) => `<li>${fact}</li>`)
+              .join("");
+            infoDisplay.innerHTML = `
+                <h3>${data.name}</h3>
+                <p>${data.info}</p>
+                <ul>${factsHTML}</ul>
+            `;
+            infoDisplay.style.display = "block";
+
+            // Highlight planet
+            this.style.transform = this.style.transform.replace(
+              "scale(1)",
+              "scale(1.5)"
+            );
+          });
+
+          planets[planet].addEventListener("mouseleave", function () {
+            // Hide info
+            infoDisplay.style.display = "none";
+
+            // Remove highlight
+            this.style.transform = this.style.transform.replace(
+              "scale(1.5)",
+              "scale(1)"
+            );
+          });
+        });
+
+        // 3D rotation controls
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0, };
+        let rotation = { x: 0, y: 0, };
+        const rotationSpeed = 0.5;
+        let autoRotate = true;
+        let autoRotationSpeed = 0.2;
+
+        document.addEventListener("mousedown", function (e) {
+          isDragging = true;
+          previousMousePosition = {
+            x: e.clientX,
+            y: e.clientY,
+          };
+        });
+
+        document.addEventListener("mousemove", function (e) {
+          if (!isDragging) return;
+
+          const deltaX = e.clientX - previousMousePosition.x;
+          const deltaY = e.clientY - previousMousePosition.y;
+
+          rotation.y += deltaX * rotationSpeed;
+          rotation.x -= deltaY * rotationSpeed;
+
+          // Limit vertical rotation
+          rotation.x = Math.max(-60, Math.min(60, rotation.x));
+
+          // Apply rotation to the entire solar system
+          document.body.style.transform = `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`;
+
+          previousMousePosition = {
+            x: e.clientX,
+            y: e.clientY,
+          };
+        });
+
+        document.addEventListener("mouseup", function () {
+          isDragging = false;
+        });
+
+        // Auto-rotation
+        function autoRotateSolarSystem() {
+          if (autoRotate && !isDragging) {
+            rotation.y += autoRotationSpeed;
+            document.body.style.transform = `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`;
+          }
+          requestAnimationFrame(autoRotateSolarSystem);
+        }
+
+        autoRotateSolarSystem();
+
+        // Toggle auto-rotation when clicking the sun
+        planets.sun.addEventListener("click", function () {
+          autoRotate = !autoRotate;
+          this.style.boxShadow = autoRotate
+            ? "0 0 80px orange, 0 0 140px rgba(255, 165, 0, 0.7)"
+            : "0 0 80px red, 0 0 140px rgba(255, 0, 0, 0.7)";
+        });
+      });
+    </script>
+  </body>
+</html>
